@@ -1,0 +1,91 @@
+---
+title: "Cuando los Datos Hablan: Simulación del Rendimiento Académico en Panamá."
+author: "Luis Castillo"
+date: "`r format(Sys.Date(), '%d-%m-%Y')`"
+output: 
+  html_document:
+    theme: paper
+    toc: true
+    toc_float: true
+    df_print: paged
+---
+
+```{r setup, include=FALSE}
+library(readxl)
+library(dplyr)
+library(ggplot2)
+library(plotly)
+library(DT)
+library(knitr)
+library(kableExtra)
+```
+
+## **Introducción**
+
+Este documento presenta un análisis interactivo realizado en RStudio, utilizando un dataset simulado de 500 estudiantes panameños, generado con apoyo de inteligencia artificial.
+
+El objetivo principal es demostrar el uso integrado de Excel, Power BI y RStudio en el estudio del rendimiento académico, aplicando conceptos estadísticos vistos durante el semestre.
+
+![Estudiantes de Secundaria - Meduca](secundaria.jpeg)
+
+## **Importación de Datos**
+```{r cars}
+df <- read_excel("DataExam.xlsx")
+head(df)
+```
+
+## **Tabla Interactiva**
+La siguiente tabla permite explorar el dataset de forma dinámica, con filtros, búsqueda y paginación.
+```{r tablaInteractiva, echo=FALSE}
+DT::datatable(df,
+options = list(pageLength = 10, scrollX = TRUE),
+rownames = FALSE)
+
+```
+
+## **Estadísticas Descriptivas**
+Se presentan algunas medidas de tendencia central y dispersión de variables numéricas relevantes.
+```{r pressure, echo=FALSE}
+stats_df <- df %>%
+summarise(
+Media_Calificacion = mean(calificacion),
+Mediana_Calificacion = median(calificacion),
+DesvEst_Calificacion = sd(calificacion),
+Rango_Edad = max(edad) - min(edad),
+Promedio_Horas_Estudio = mean(horaestudio)
+)
+
+kable(stats_df, digits = 2) %>%
+kable_styling(full_width = FALSE, bootstrap_options = "striped")
+```
+
+## **Gráfico Interactivo: Distribución de Calificaciones**
+```{r grafico, echo=FALSE}
+plot_ly(df, x = ~calificacion, type = "histogram")
+```
+
+## **Gráfico Interactivo: Calificación por Sexo**
+```{r grafico_dos, echo=FALSE}
+plot_ly(df, x = ~sexo, y = ~calificacion, type = "box")
+```
+
+## **Gráfico Interactivo: Horas de Estudio vs Calificación**
+```{r dispersion, echo=FALSE}
+plot_ly(df,
+x = ~horaestudio,
+y = ~calificacion,
+mode = "markers",
+type = "scatter")
+```
+
+## **Conclusión**
+RStudio permitió un análisis reproducible mediante código.
+
+Las visualizaciones interactivas facilitan identificar relaciones en los datos.
+
+Se observaron patrones en el rendimiento académico asociados a horas de estudio, sexo y zona.
+
+Este documento complementa el trabajo realizado previamente en Excel (limpieza, descriptivos) y Power BI (dashboard dinámico).
+
+## **Créditos**
+Documento creado por Luis Castillo como parte del examen final del curso Manejo de Paquetes Estadísticos.
